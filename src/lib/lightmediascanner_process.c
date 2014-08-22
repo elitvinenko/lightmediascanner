@@ -960,11 +960,8 @@ _process_dir(struct cinfo *info, int base, char *path, const char *name, process
         if (de->d_type == DT_REG) {
             if (process_file(info, new_len, path, de->d_name) < 0) {
                 fprintf(stderr,
-                        "ERROR: unrecoverable error parsing file, "
-                        "exit \"%s\".\n", path);
-                path[new_len - 1] = '\0';
-                r = -4;
-                goto end;
+                        "ERROR: error parsing file, "
+                        "\"%s\".\n", path);
             }
         } else if (de->d_type == DT_DIR) {
             if (_process_dir(
@@ -980,11 +977,8 @@ _process_dir(struct cinfo *info, int base, char *path, const char *name, process
             if (_process_unknown(
                     info, new_len, path, de->d_name, process_file) < 0) {
                 fprintf(stderr,
-                        "ERROR: unrecoverable error parsing DT_UNKNOWN, "
-                        "exit \"%s\".\n", path);
-                path[new_len - 1] = '\0';
-                r = -6;
-                goto end;
+                        "ERROR: error parsing DT_UNKNOWN, "
+                        "\"%s\".\n", path);
             }
         }
     }
