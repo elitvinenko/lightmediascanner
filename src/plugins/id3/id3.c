@@ -393,7 +393,7 @@ _estimate_mp3_bitrate_from_frames(int fd, off_t mpeg_offset,
     /* For Layer I slot is 32 bits long, for Layer II and Layer III slot is 8
      * bits long.
      * [layer == 1] */
-    unsigned int padding_size_table[2] = { 1, 4 };
+    unsigned int padding_size_table[4] = { 0, 1, 1, 4 };
     unsigned int samples_per_frame, sampling_rate;
 
     samples_per_frame = _samples_per_frame_table[hdr.version][hdr.layer];
@@ -415,12 +415,12 @@ _estimate_mp3_bitrate_from_frames(int fd, off_t mpeg_offset,
         sum += bitrate;
         i++;
 
-        padding_size = hdr.padding ? padding_size_table[hdr.layer == 1] : 0;
+        padding_size = hdr.padding ? padding_size_table[hdr.layer] : 0;
 
         framesize = 4;          /* mpeg header */
         framesize += (samples_per_frame / 8) * bitrate * 1000;
         framesize /= sampling_rate;
-        framesize += (padding_size * samples_per_frame);
+        framesize += padding_size;
 
         offset += framesize;
 
@@ -571,7 +571,7 @@ found:
         }
 
         if (!hdr.length && hdr.bitrate > 0)
-            hdr.length =  (8 * (size - off)) / (1000 * hdr.bitrate);
+            hdr.length =  (8 * (size - off)) /  hdr.bitrate;
     }
 
     if (r < 0)
