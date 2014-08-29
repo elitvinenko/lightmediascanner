@@ -223,6 +223,8 @@ _match_video_profile(const struct lms_dlna_video_profile *video_rules,
     char *tmp, *p;
     const char *profile, *level;
 
+    if (!video->codec.len)
+        return NULL;
     tmp = strdupa(video->codec.str);
     p = strstr(tmp, "-p");
     if (!p) profile = "";
